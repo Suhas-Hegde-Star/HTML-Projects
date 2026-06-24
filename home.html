@@ -1,18 +1,344 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Linker</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PatelSites | Workspace</title>
+<style>
+  /* Global Application Resets */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body, html {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    background-color: #f3f4f6;
+    color: #1f2937;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* Core Application Flex Layout Grid */
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* 1. Global Top Navigation Header Bar */
+  header {
+    height: 56px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 30;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .app-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  /* Top Right Action Button Layout */
+  .submit-btn {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.15);
+    transition: all 0.2s ease;
+  }
+
+  .submit-btn:hover {
+    background: linear-gradient(135deg, #4338ca, #4f46e5);
+    box-shadow: 0 4px 8px rgba(79, 70, 229, 0.25);
+  }
+
+  /* Main Workspace Structure Body Area */
+  .main-workspace {
+    display: flex;
+    flex: 1;
+    height: calc(100% - 56px);
+    width: 100%;
+    position: relative;
+  }
+
+  /* 2. Left-Hand Application Feature Docking Bar */
+  .left-dock {
+    width: 72px;
+    background-color: #0f172a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    gap: 8px;
+    z-index: 25;
+  }
+
+  .dock-item {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 0.65rem;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    gap: 4px;
+  }
+
+  .dock-item.active, .dock-item:hover {
+    color: #ffffff;
+    background-color: #1e293b;
+  }
+
+  /* Minimal Vector Mimics for App Dock Icons */
+  .dock-icon {
+    width: 20px;
+    height: 20px;
+    border: 2px solid currentColor;
+    border-radius: 4px;
+  }
+  .dock-icon.circle { border-radius: 50%; }
+
+  /* 3. Sliding Variable/Property Options Sidebar Panel */
+  .options-panel {
+    width: 320px;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 20;
+    overflow-y: auto;
+  }
+
+  .panel-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px;
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Styled Select Element Dropdown Box Wrapper */
+  .select-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  select {
+    width: 100%;
+    padding: 12px 36px 12px 14px;
+    font-size: 0.95rem;
+    color: #1f2937;
+    background-color: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none; 
+  }
+
+  select:focus {
+    background-color: #ffffff;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+
+  /* Custom Inline Vector Dropdown Selector Arrow */
+  .select-wrapper::after {
+    content: "";
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://w3.org' fill='none' viewBox='0 0 24 24' stroke='%234b5563' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+
+  optgroup {
+    font-weight: 700;
+    color: #4f46e5;
+    background: #ffffff;
+    padding: 6px;
+  }
+
+  option {
+    font-weight: normal;
+    color: #1f2937;
+    padding: 8px;
+  }
+
+  /* 4. Large Central Fluid Space Image Canvas Preview Area */
+  .preview-canvas-area {
+    flex: 1;
+    background-color: #f3f4f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    position: relative;
+    overflow: auto;
+  }
+
+  /* Simulated Centered Interactive Graphic Canvas Board Container */
+  .canvas-artboard {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 500px;
+    aspect-ratio: 4 / 3;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border: 1px solid #e5e7eb;
+  }
+
+  .canvas-placeholder-text {
+    color: #9ca3af;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  /* Responsive Design Adjustments for Small Mobile Screen viewports */
+  @media(max-width: 768px) {
+    .main-workspace {
+      flex-direction: column-reverse;
+    }
+    .left-dock {
+      width: 100%;
+      height: 60px;
+      flex-direction: row;
+      justify-content: space-around;
+      padding: 0;
+    }
+    .dock-item {
+      width: 50px;
+      height: 50px;
+    }
+    .options-panel {
+      width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .preview-canvas-area {
+      padding: 16px;
+    }
+  }
+</style>
 </head>
 <body>
-<div align="center" size = 20pt>
-<p>Welcome to home</h1>
-<a href="home.html">Home</a>
-<a href="one.html">Go to the first page Here</a><br>
-<a href="two.html">Go to the second page Here</a><br>
-<a href="carz.html">Go to the 10 fastest cars page Here</a><br>
-<a href="https://www.speedtest.net/">Go to test your speed here</a><br>
-<a href="https://www.github.com/Suhas-Hegde-Star">Go to github Here</a><br>
-<a href="https://creatorapp.zohopublic.in/sagar_mindmentorz/mind-mentorz-kids-information-management-system/page-perma/Kid_Login_Page/Qw5XAG9RJ98pdZ6aj3wNyk6XT8CYTYmFNJaRQqVzNbpfFr7f048nZbZe6tmYTUjZP9j2nK3rD2fZyF0nKbMAUwnkDXUy0JuVFPnU?ID=123252000000061023&RID=209">Go to the Chess Class here</a>
-</div>
+
+<form class="app-container" action="/action_page.php">
+  
+  <!-- 1. Header Control Bar -->
+  <header>
+    <div class="header-left">
+      <span class="app-title">PatelSites</span>
+    </div>
+    <input type="submit" class="submit-btn" value="Export Image">
+  </header>
+
+  <!-- Main Grid Workspace Body Block -->
+  <div class="main-workspace">
+    
+    <!-- 2. Feature Application Access Dock Panel Links -->
+    <div class="left-dock">
+      <div class="dock-item active">
+        <div class="dock-icon"></div>
+        <span>Cars</span>
+      </div>
+      <div class="dock-item">
+        <div class="dock-icon circle"></div>
+        <span>Effects</span>
+      </div>
+      <div class="dock-item">
+        <div class="dock-icon" style="height:14px; margin-top:3px;"></div>
+        <span>Layout</span>
+      </div>
+    </div>
+
+    <!-- 3. Sidebar Options Workspace Parameter Box Inputs -->
+    <div class="options-panel">
+      <div>
+        <h2 class="panel-title">Asset Configuration</h2>
+      </div>
+      
+      <div class="control-group">
+        <label for="cars">Choose a car asset:</label>
+        <div class="select-wrapper">
+          <select name="cars" id="cars">
+            <optgroup label="Swedish Cars">
+              <option value="volvo">Volvo</option>
+              <option value="saab">Saab</option>
+            </optgroup>
+            <optgroup label="German Cars">
+              <option value="mercedes">Mercedes</option>
+              <option value="audi">Audi</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Main Graphic Canvas Component Sandbox Area -->
+    <div class="preview-canvas-area">
+      <div class="canvas-artboard">
+        <div class="canvas-placeholder-text">
+          Image Canvas Workspace Preview Area
+        </div>
+      </div>
+    </div>
+
+  </div>
+</form>
+
 </body>
 </html>
